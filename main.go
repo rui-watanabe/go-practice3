@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -75,9 +76,41 @@ func jsonFunc() {
 
 }
 
+func longProcess(ctx context.Context, ch chan string) {
+	fmt.Println("start")
+	time.Sleep(2 * time.Second)
+	fmt.Println("end")
+	ch <- "process result"
+}
+
+func contextFunc() {
+	ch := make(chan string)
+	ctx := context.Background()
+	ctx, cancel := context.WithTimeout(ctx, 1*time.Second)
+
+	defer cancel()
+
+	go longProcess(ctx, ch)
+
+L:
+	for {
+		select {
+		case <-ctx.Done():
+			fmt.Println("err")
+			fmt.Println(ctx.Err())
+			break L
+		case s := <-ch:
+			fmt.Println(s)
+			fmt.Println("success")
+			break L
+		}
+	}
+}
+
 func main() {
 	// os.Exit(1)
 	// fmt.Println("start")
 	syncFunc()
 	jsonFunc()
+	contextFunc()
 }
