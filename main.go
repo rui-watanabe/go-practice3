@@ -4,7 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
+	"net/http"
 	"sync"
 	"time"
 )
@@ -107,10 +109,29 @@ L:
 	}
 }
 
+func netHttpClientFunc() {
+	res, _ := http.Get("https://exmaple.com")
+
+	fmt.Println(res.StatusCode)
+	fmt.Println(res.Proto)
+
+	fmt.Println(res.Header["Date"])
+	fmt.Println(res.Header["Content-Type"])
+
+	fmt.Println(res.Request.Method)
+	fmt.Println(res.Request.URL)
+
+	defer res.Body.Close()
+	body, _ := ioutil.ReadAll(res.Body)
+	fmt.Println(string(body))
+
+}
+
 func main() {
 	// os.Exit(1)
 	// fmt.Println("start")
 	syncFunc()
 	jsonFunc()
 	contextFunc()
+	netHttpClientFunc()
 }
