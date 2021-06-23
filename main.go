@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"html/template"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -124,7 +125,21 @@ func netHttpClientFunc() {
 	defer res.Body.Close()
 	body, _ := ioutil.ReadAll(res.Body)
 	fmt.Println(string(body))
+}
 
+func top(w http.ResponseWriter, r *http.Request) {
+	t, err := template.ParseFiles("temp.html")
+
+	if err != nil {
+		log.Println(err)
+	}
+
+	t.Execute(w, "Hello World")
+}
+
+func netHttpServerFunc() {
+	http.HandleFunc("/top", top)
+	http.ListenAndServe(":8080", nil)
 }
 
 func main() {
@@ -134,4 +149,5 @@ func main() {
 	jsonFunc()
 	contextFunc()
 	netHttpClientFunc()
+	netHttpServerFunc()
 }
