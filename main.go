@@ -2,8 +2,10 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"encoding/json"
 	"fmt"
+	_ "github.com/mattn/go-sqlite3"
 	"html/template"
 	"io/ioutil"
 	"log"
@@ -142,12 +144,29 @@ func netHttpServerFunc() {
 	http.ListenAndServe(":8080", nil)
 }
 
+func databaseFunc() {
+	Db, _ := sql.Open("sqlite3", "example.sql")
+
+	defer Db.Close()
+
+	cmd := `CREATE TABLE IF NOT EXISTS persons(
+					name STRING,
+					age INT)`
+
+	_, err := Db.Exec(cmd)
+
+	if err != nil {
+		log.Fatalln(err)
+	}
+}
+
 func main() {
 	// os.Exit(1)
 	// fmt.Println("start")
-	syncFunc()
-	jsonFunc()
-	contextFunc()
+	// syncFunc()
+	// jsonFunc()
+	// contextFunc()
 	netHttpClientFunc()
-	netHttpServerFunc()
+	// netHttpServerFunc()
+	databaseFunc()
 }
