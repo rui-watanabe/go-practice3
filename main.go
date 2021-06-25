@@ -144,16 +144,18 @@ func netHttpServerFunc() {
 	http.ListenAndServe(":8080", nil)
 }
 
+var Db *sql.DB
+
 func databaseFunc() {
-	Db, _ := sql.Open("sqlite3", "example.sql")
+	Db, _ := sql.Open("sqlite3", "./example.sql")
 
 	defer Db.Close()
 
-	cmd := `CREATE TABLE IF NOT EXISTS persons(
-					name STRING,
-					age INT)`
-
-	_, err := Db.Exec(cmd)
+	// cmd := `CREATE TABLE IF NOT EXISTS persons(
+	// 				name STRING,
+	// 				age INT)`
+	cmd := "INSERT INTO persons(name, age) VALUES (?,?)"
+	_, err := Db.Exec(cmd, "taro", 33)
 
 	if err != nil {
 		log.Fatalln(err)
@@ -166,7 +168,7 @@ func main() {
 	// syncFunc()
 	// jsonFunc()
 	// contextFunc()
-	netHttpClientFunc()
+	// netHttpClientFunc()
 	// netHttpServerFunc()
 	databaseFunc()
 }
