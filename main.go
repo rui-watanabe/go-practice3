@@ -5,13 +5,15 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	_ "github.com/mattn/go-sqlite3"
 	"html/template"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"sync"
 	"time"
+
+	_ "github.com/mattn/go-sqlite3"
+	"gopkg.in/go-ini/ini.v1"
 )
 
 type A struct{}
@@ -209,6 +211,29 @@ func databaseFunc() {
 	}
 }
 
+type Configlist struct {
+	Port      int
+	DbName    string
+	SQLDriver string
+}
+
+var Config Configlist
+
+func init() {
+	cfg, _ := ini.Load("config.ini")
+	Config = Configlist{
+		Port:      cfg.Section("web").Key("port").MustInt(8080),
+		DbName:    cfg.Section("db").Key("name").MustString("example.sql"),
+		SQLDriver: cfg.Section("db").Key("driver").String(),
+	}
+}
+
+func goiniFunc() {
+	fmt.Printf("Port=%v\n", Config.Port)
+	fmt.Printf("DbName=%v\n", Config.DbName)
+	fmt.Printf("SQLDriver=%v\n", Config.SQLDriver)
+}
+
 func main() {
 	// os.Exit(1)
 	// fmt.Println("start")
@@ -217,5 +242,6 @@ func main() {
 	// contextFunc()
 	// netHttpClientFunc()
 	// netHttpServerFunc()
-	databaseFunc()
+	// databaseFunc()
+	goiniFunc()
 }
