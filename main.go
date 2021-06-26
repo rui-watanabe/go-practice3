@@ -146,6 +146,11 @@ func netHttpServerFunc() {
 
 var Db *sql.DB
 
+type Person struct {
+	Name string
+	Age  int
+}
+
 func databaseFunc() {
 	Db, _ := sql.Open("sqlite3", "./example.sql")
 
@@ -156,12 +161,28 @@ func databaseFunc() {
 	// 				age INT)`
 	// cmd := "INSERT INTO persons(name, age) VALUES (?,?)"
 	// _, err := Db.Exec(cmd, "taro", 33)
-	cmd := "UPDATE persons SET age = ? WHERE name = ?"
-	_, err := Db.Exec(cmd, 44, "taro")
+	// cmd := "UPDATE persons SET age = ? WHERE name = ?"
+	// _, err := Db.Exec(cmd, 44, "taro")
+	// cmd := "INSERT INTO persons(name, age) VALUES (?,?)"
+	// _, err := Db.Exec(cmd, "hanako", 19)
+
+	// if err != nil {
+	// 	log.Fatalln(err)
+	// }
+
+	cmd := "SELECT * FROM persons WHERE age = ?"
+	row := Db.QueryRow(cmd, 19)
+	var p Person
+	err := row.Scan(&p.Name, &p.Age)
 
 	if err != nil {
-		log.Fatalln(err)
+		if err == sql.ErrNoRows {
+			log.Println("No row")
+		} else {
+			log.Println(err)
+		}
 	}
+	fmt.Println(p.Name, p.Age)
 }
 
 func main() {
