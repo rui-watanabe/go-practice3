@@ -154,8 +154,10 @@ func databaseFunc() {
 	// cmd := `CREATE TABLE IF NOT EXISTS persons(
 	// 				name STRING,
 	// 				age INT)`
-	cmd := "INSERT INTO persons(name, age) VALUES (?,?)"
-	_, err := Db.Exec(cmd, "taro", 33)
+	// cmd := "INSERT INTO persons(name, age) VALUES (?,?)"
+	// _, err := Db.Exec(cmd, "taro", 33)
+	cmd := "UPDATE persons SET age = ? WHERE name = ?"
+	_, err := Db.Exec(cmd, 44, "taro")
 
 	if err != nil {
 		log.Fatalln(err)
