@@ -184,22 +184,28 @@ func databaseFunc() {
 	// }
 	// fmt.Println(p.Name, p.Age)
 
-	cmd := "SELECT * FROM persons"
-	rows, _ := Db.Query(cmd)
-	defer rows.Close()
-	var pp []Person
-	for rows.Next() {
-		var p Person
-		err := rows.Scan(&p.Name, &p.Age)
-		if err != nil {
-			log.Println(err)
-		}
-		pp = append(pp, p)
-	}
-	fmt.Println(pp)
+	// cmd := "SELECT * FROM persons"
+	// rows, _ := Db.Query(cmd)
+	// defer rows.Close()
+	// var pp []Person
+	// for rows.Next() {
+	// 	var p Person
+	// 	err := rows.Scan(&p.Name, &p.Age)
+	// 	if err != nil {
+	// 		log.Println(err)
+	// 	}
+	// 	pp = append(pp, p)
+	// }
+	// fmt.Println(pp)
 
-	for _, p := range pp {
-		fmt.Println(p.Name, p.Age)
+	// for _, p := range pp {
+	// 	fmt.Println(p.Name, p.Age)
+	// }
+
+	cmd := "DELETE FROM persons WHERE name = ?"
+	_, err := Db.Exec(cmd, "hanako")
+	if err != nil {
+		log.Fatalln(err)
 	}
 }
 
